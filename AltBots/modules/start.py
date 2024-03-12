@@ -1,46 +1,58 @@
-from telethon import __version__, events, Button
+import asyncio
+from datetime import datetime
+import random
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Filters
 
-from config import X1, X2, X3, X4, X5, X6, X7, X8, X9, X10
+@app.on_message()
+async def handle_messages(_, message):
+    user_id = message.from_user.id
+    user_data.setdefault(user_id, {}).setdefault("total_messages", 0)
+    user_data[user_id]["total_messages"] += 1
 
+    today_start = datetime.combine(datetime.today(), datetime.min.time())
+    top_members_collection.update_one(
+        {"_id": user_id},
+        {"$inc": {"total_messages": 1}, "$set": {"last_updated": datetime.now()}},
+        upsert=True
+    )
 
-START_BUTTON = [
-    [
-        Button.inline("• ᴄᴏᴍᴍᴀɴᴅs •", data="help_back")
-    ],
-    [
-        Button.url("• ᴄʜᴀɴɴᴇʟ •", "https://t.me/TheAltron"),
-        Button.url("• sᴜᴘᴘᴏʀᴛ •", "https://t.me/AltronChats")
-    ],
-    [
-        Button.url("• ʀᴇᴘᴏ •", "https://github.com/ItZxSTaR/XBOTS")
-    ]
-]
+@app.on_message(filters.private & filters.command("start"))
+async def start_private_chat(client, message):
+    # Choose a random image URL
+    image_url = random.choice(IMAGE_URLS)
 
+    keyboard = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("❤️‍🔥ᴀᴅᴅ ᴍᴇ❤️‍🔥", url=f"t.me/{BOT_USERNAME}?startgroup=true"),
+                InlineKeyboardButton("💫ꜱᴜᴘᴘᴏʀᴛ💫", url=f"t.me/{SUPPORT_GROUP_USERNAME}"),
+            ],
+            [
+                InlineKeyboardButton("💖ꜱᴏᴜʀᴄᴇ💖", url=f"t.me/{SOURCE_CODE_CHANNEL_USERNAME}"),
+            ]
+        ]
+    )
 
-@X1.on(events.NewMessage(pattern="/start"))
-@X2.on(events.NewMessage(pattern="/start"))
-@X3.on(events.NewMessage(pattern="/start"))
-@X4.on(events.NewMessage(pattern="/start"))
-@X5.on(events.NewMessage(pattern="/start"))
-@X6.on(events.NewMessage(pattern="/start"))
-@X7.on(events.NewMessage(pattern="/start"))
-@X7.on(events.NewMessage(pattern="/start"))
-@X8.on(events.NewMessage(pattern="/start"))
-@X9.on(events.NewMessage(pattern="/start"))
-@X10.on(events.NewMessage(pattern="/start"))
-async def start(event):              
-    if event.is_private:
-        AltBot = await event.client.get_me()
-        bot_name = AltBot.first_name
-        bot_id = AltBot.id
-        TEXT = f"**ʜᴇʏ​ [{event.sender.first_name}](tg://user?id={event.sender.id}),\n\nɪ ᴀᴍ [{bot_name}](tg://user?id={bot_id})​**\n━━━━━━━━━━━━━━━━━━━\n\n"
-        TEXT += f"» **ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ​ : [𝐀xᴇɴ](https://t.me/PyXen)**\n\n"
-        TEXT += f"» **xʙᴏᴛꜱ ᴠᴇʀsɪᴏɴ :** `M3.3`\n"
-        TEXT += f"» **ᴘʏᴛʜᴏɴ ᴠᴇʀsɪᴏɴ :** `3.11.3`\n"
-        TEXT += f"» **ᴛᴇʟᴇᴛʜᴏɴ ᴠᴇʀsɪᴏɴ :** `{__version__}`\n━━━━━━━━━━━━━━━━━"
-        await event.client.send_file(
-                    event.chat_id,
-                    "https://te.legra.ph/file/07d39b85c6cea32f15259.jpg",
-                    caption=TEXT, 
-                    buttons=START_BUTTON
-                )
+    await client.send_photo(
+        chat_id=message.chat.id,
+        photo=image_url,
+        caption="<b>нυι</b> тнιѕ ιѕ 「🛡ᴛꜱ ʀᴀɴᴋɪɴɢ ʙᴏᴛ🛡」❖ 💖\n"
+                "♡━━━━━━━━ ᴀʀɪ ━━━━━━━♡\n"
+                "💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛꜱ ʀᴀɴᴋɪɴɢ ʙᴏᴛ!.\n "
+                "🌟 ᴅɪꜱᴄᴏᴠᴇʀ ᴡʜᴏ ꜱʜɪɴᴇꜱ ᴛʜᴇ ʙʀɪɢʜᴛᴇꜱᴛ ɪɴ ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ! ꜰʀᴏᴍ ᴀᴄᴛɪᴠᴇ ᴍᴇᴍʙᴇʀꜱ ᴛᴏ ᴛᴏᴘ ᴄᴏɴᴛʀɪʙᴜᴛᴏʀꜱ, ᴡᴇ'ʀᴇ ʜᴇʀᴇ ᴛᴏ ʀᴇᴄᴏɢɴɪᴢᴇ ᴇxᴄᴇʟʟᴇɴᴄᴇ.\n"
+                "📊 Stay updated with real-time rankings, track your progress, and compete with friends to climb the leaderboard!\n"
+                "❖Join us in celebrating achievements and fostering a vibrant community together!❖\n"
+                "♡━━━━━━━━ ᴀʀɪ ━━━━━━━♡\n\n"
+                "ᴍᴀᴅᴇ ᴡɪᴛʜ 🖤 ʙʏ <a href=\"https://t.me/lll_notookk_lll\">||ᴀʀɪ||❣️</a>",
+        reply_markup=keyboard
+    )
+    accha = await message.reply_text(
+        text="__ᴅιиg ᴅιиg ꨄ︎ ѕтαятιиg..__"
+    )
+    await asyncio.sleep(0.2)
+    await accha.edit("__ᴅιиg ᴅιиg ꨄ sтαятιиg.....__")
+    await asyncio.sleep(0.2)
+    await accha.edit("__ᴅιиg ᴅιиg ꨄ︎ sтαятιиg..__")
+    await asyncio.sleep(0.2)
+    await accha.delete()
